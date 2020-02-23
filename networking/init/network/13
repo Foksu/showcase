@@ -1,0 +1,8 @@
+#Thanks to the previous question and the reverse DNS find the name of your host
+#We can use host 10.12.6.11 which results in 
+#11.6.12.10.in-addr.arpa domain name pointer c2r6p11.hive.fi.
+#So the correct answer is:
+
+c2r6p11.hive.fi
+
+#Which obviously is the place where I was doing the assignment at the time

@@ -1,0 +1,5 @@
+#Find the external IP of 42.fr
+#With nslookup 42.fr I got 2 IP addresses which were:
+
+163.172.250.12
+163.172.250.13

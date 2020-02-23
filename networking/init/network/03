@@ -1,0 +1,4 @@
+#Identify the MAC address of the Wi-Fi card
+#networksetup -listallhardwareports shows us that device en1 is the Wi-Fi card
+
+networksetup -getmacaddress en1 | awk '{print $3}'

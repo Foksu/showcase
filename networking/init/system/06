@@ -1,0 +1,4 @@
+#Name the command that reboots the SSH service.
+#Again we need to be superuser to do this.
+
+sudo service ssh restart

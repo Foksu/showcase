@@ -1,0 +1,4 @@
+#Find the command that allows you to connect via ssh on the VM.(In parallel with the graphic session)
+#The syntax is ssh <username>@<ip>, you can find out ip by using command "ip a" on VM and picking the enp0 device inet IP.
+
+ssh vvaltone@10.12.180.239

@@ -1,0 +1,6 @@
+#Find the command that list all packages
+#Because assignment asks for all packages that's what we're gonna get:
+
+apt list
+
+#Personally I'd use "apt list --installed" command to list all installed packages.

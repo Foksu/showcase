@@ -1,0 +1,6 @@
+#Name the command that displays the available space left and used on the system in an humanly understandable way
+
+df -h --total --output=source,size,used,avail,pcent
+
+#Fun fact: the man page of df says that -h is short for --human-readable
+#I added --total and output to make it readable in fast way.

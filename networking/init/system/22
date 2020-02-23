@@ -1,0 +1,5 @@
+#Find the command that add a new local user
+#You need to be superuser for this so do "su -" and type root password if you are not superuser.
+#<username> in this case is what username user wants.
+
+adduser <username>

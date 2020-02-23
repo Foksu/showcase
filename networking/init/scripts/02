@@ -1,0 +1,7 @@
+#!/bin/bash
+#Write a script which delete an ACTIVE user on the VM.
+#You need to be superuser to do this so do "su -" and type root password.
+#This removes ACTIVE user in this case called "test".
+
+pkill -u test
+deluser --remove-home test

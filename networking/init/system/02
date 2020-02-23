@@ -1,0 +1,6 @@
+#What command can you use to rename your system?
+#We can see the current system name by using "hostname"
+#We need to be superuser to this so if you aren't superuser yet do "su -" and type the superuser password.
+#For this assignment we use the name "test2".
+
+hostname test2

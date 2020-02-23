@@ -1,0 +1,268 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    deployment.txt                                     :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: vvaltone <marvin@42.fr>                    +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2020/02/17 14:52:04 by vvaltone          #+#    #+#              #
+#    Updated: 2020/02/20 15:26:25 by vvaltone         ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
+Install Debian 64bit
+Choose Hostname
+Choose root password
+Create nonroot username: ville and password: 1234
+Setup disks:
+
+#1 primary 4.2 GB f ext4 /
+#2 primary 2.4 GB f ext4 /home
+#5 logical 2.0 GB f swap swap
+
+Login with root or su - //to switch to root if you logged in with user
+apt-get update //to update list of available packages
+apt-get upgrade //to install newest versios of packages
+
+apt-get install ssh sudo vim -y //Lets get some necessary packages to get started.
+visudo
+Set user under "# User privilege specification"
+root	ALL=(ALL:ALL) ALL
+ville	ALL=(ALL:ALL) NOPASSWD:ALL
+
+In the VirtualBox Settings set the Network Adapter Attached to Bridged Adapter
+
+sudo vim /etc/network/interfaces
+
+#The primary interface
+auto enp0s3
+
+sudo vim /etc/network/interfaces.d/enp0s3 and put this in there:
+iface enp0s3 inet static
+	address 10.12.180.171
+	netmask 255.255.255.252
+	gateway 10.12.254.254
+
+//netmask 255.255.255.252 leaves us with /30 subnet mask, or in binary it would be 11111111 11111111 11111111 11111100, or 30 one's.
+//netmask 255.255.255.0 is used for /24 subnet mask, which in binary is 11111111 11111111 11111111 00000000, or 24 one's.
+
+sudo service networking restart //Apply these new settings.
+
+ip a //to see changes of IP and subnet mask.
+
+sudo vim /etc/ssh/sshd_config
+#Port 22 -> Port 51234 //Port should be between 49152-65535 because they aren't used by necessary system services.
+
+sudo service sshd restart
+
+//Now you can login with ssh ville@10.12.180.180 -p 51234
+
+_ON MAC_
+
+ssh-keygen -t rsa
+ssh-copy-id -i /Users/vvaltone/.ssh/id_rsa.pub ville@10.12.180.180 -p 51234
+
+_ON MAC PART ENDS_
+
+sudo vim /etc/ssh/sshd_config
+(Line 32) PermitRootLogin no
+(Line 37) PubkeyAuthentication yes
+(Line 56) PasswordAuthentication no
+
+sudo service sshd restart
+
+sudo apt-get install ufw
+sudo ufw status
+sudo ufw enable									//if it is not enabled
+sudo ufw default deny incoming
+sudo ufw default allow outgoing
+sudo ufw allow 443
+sudo ufw allow 80/tcp
+sudo ufw allow 51234/tcp
+sudo ufw reload
+
+sudo apt-get install apache2
+sudo apt-get install fail2ban
+sudo service fail2ban status
+sudo cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
+sudo vim /etc/fail2ban/jail.local
+
+	[sshd]
+	enabled = true
+	port    = ssh
+	logpath = %(sshd_log)s
+	backend = %(sshd_backend)s
+	maxretry = 3
+	bantime = 600
+
+	#
+	# HTTP servers
+	#
+
+	[http-get-dos]
+	enabled = true
+	port = http,https
+	filter = http-get-dos
+	logpath = /var/log/apache2/access.log
+	maxretry = 150
+	findtime = 200
+	bantime = 660
+	action = iptables[name=HTTP, port=http, protocol=tcp]
+
+sudo touch /etc/fail2ban/filter.d/http-get-dos.conf
+sudo vim /etc/fail2ban/filter.d/http-get-dos.conf
+
+					[Definition]
+					failregex = ^<HOST> -.*"(GET|POST).*
+					ignoreregex =
+
+sudo apt-get install portsentry
+sudo vim /etc/default/portsentry
+
+	TCP_MODE="atcp"
+	UDP_MODE="audp"
+
+sudo vim /etc/portsentry/portsentry.conf
+
+//Edit line numbers 135 and 136 to
+
+	BLOCK_UDP="1"
+	BLOCK_TCP="1"
+
+//Comment the line number 170 KILL_ROUTE and uncomment line number 209 KILL_ROUTE so it looks like this:
+
+	KILL_ROUTE="/sbin/iptables -I INPUT -s $TARGET$ -j DROP"
+
+//Comment line number 243 KILL_HOSTS_DENY
+
+	#KILL_HOSTS_DENY="ALL: $TARGET$ : DENY"
+
+//So the SSH doesn't get stopped.
+
+sudo service portsentry restart
+
+//Disable all services we don't need
+sudo systemctl disable bluetooth.service
+sudo systemctl disable console-setup.service
+sudo systemctl disable keyboard-setup.service
+sudo systemctl disable syslog.service
+sudo systemctl disable haveged.service
+sudo systemctl disable wpa_supplicant.service
+
+//Update script for scheduled task
+sudo touch /var/log/update_script.log
+sudo chmod 777 /var/log/update_script.log
+sudo echo "sudo apt-get update -y >> /var/log/update_script.log" > /home/ville/update_packages.sh
+sudo echo "sudo apt-get upgrade -y >> /var/log/update_script.log" >> /home/ville/update_packages.sh
+sudo chmod 755 update_packages.sh
+
+sudo apt install mailutils postfix
+sudo vim ~/cronmonitor.sh
+
+#!/bin/bash
+
+CRON=/etc/crontab
+CRONHASH=/var/tmp/cron_hash
+
+if [ -f $CRON ]; then
+    if [ -f $CRONHASH ]; then
+        if [ "$(cat $CRONHASH)" != "$(md5sum $CRON)" ]; then
+            echo "$CRON was modified" | mail -s "cronCheck report" root@roger
+        fi
+    fi
+    md5sum $CRON > $CRONHASH
+fi
+
+sudo systemctl enable cron
+sudo vim /etc/crontab
+
+//Add tasks
+
+	@reboot sudo /home/ville/update.sh
+	0 4 * * 6 sudo /home/ville/update.sh
+	0 0 * * * sudo /home/ville/cronMonitor.sh
+
+sudo apt-get install apache2 openssl
+//Generate SSL Certificate
+sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/apache-selfsigned.key -out /etc/ssl/certs/apache-selfsigned.crt
+//Answer questions
+			Country Name (2 letter code) [AU]:FI
+			State or Province Name (full name) [Some-State]: Helsinki
+			Locality Name (eg, city) []: Helsinki
+			Organization Name (eg, company) [Internet Widgits Pty Ltd]: Hive
+			Organizational Unit Name (eg, section) []: Hive
+			Common Name (e.g. server FQDN or YOUR name) []: 10.12.180.180
+			Email Address []:vvaltone@student.hive.fi
+
+sudo vim /etc/apache2/conf-available/ssl-params.conf
+
+	SSLCipherSuite EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH
+	SSLProtocol All -SSLv2 -SSLv3 -TLSv1 -TLSv1.1
+	SSLHonorCipherOrder On
+
+	Header always set X-Frame-Options DENY
+	Header always set X-Content-Type-Options nosniff
+
+	SSLCompression off
+	SSLUseStapling on
+	SSLStaplingCache "shmcb:logs/stapling-cache(150000)"
+
+	SSLSessionTickets Off
+
+sudo vim /etc/apache2/conf-available/default-ssl.conf
+
+	<IfModule mod_ssl.c>
+	<VirtualHost _default_:443>
+		ServerAdmin vvaltone@student.hive.fi
+		ServerName	10.12.180.180
+
+		DocumentRoot /var/www/html
+
+		ErrorLog ${APACHE_LOG_DIR}/error.log
+		CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+		SSLEngine on
+
+		SSLCertificateFile	/etc/ssl/certs/apache-selfsigned.crt
+		SSLCertificateKeyFile /etc/ssl/private/apache-selfsigned.key
+
+		<FilesMatch "\.(cgi|shtml|phtml|php)$">
+				SSLOptions +StdEnvVars
+		</FilesMatch>
+		<Directory /usr/lib/cgi-bin>
+				SSLOptions +StdEnvVars
+		</Directory>
+
+	</VirtualHost>
+	</IfModule>
+
+sudo vim /etc/apache2/sites-available/000-default.conf
+
+<VirtualHost *:80>
+
+	ServerAdmin webmaster@localhost
+	DocumentRoot /var/www/html
+
+	Redirect "/" "https://10.12.180.180/"
+
+	ErrorLog ${APACHE_LOG_DIR}/error.log
+	CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+</VirtualHost>
+
+sudo a2enmod ssl
+sudo a2enmod headers
+sudo a2ensite default-ssl
+sudo a2enconf ssl-params
+sudo systemctl reload apache2
+
+//PROPOSAL FOR DEPLOYMENT AUTOMATION
+
+Since the subject asks for proposal, I'm gonna describe it here. 
+After you've setup virtual machine and user(s), you could use either bashable scripts or
+a really neat program called Ansible, which is an Automation Platform, used for tasks like this. 
+Since I've described the steps needed for this project, Ansible or scripts could be setup to do these tasks step by step.
+You can use "scp" command to move scripts to servers, or you could just gather them from something like github. 
+Just be sure to add tag like -y after package installations so it skips the [y/n] prompts when asked.
+
+For website deployment you could navigate to /var/www/html and replace index.html and other files with yours. For example you could just git clone your files from repository or use the scp command.

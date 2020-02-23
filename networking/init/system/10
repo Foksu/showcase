@@ -1,0 +1,6 @@
+#Name the command that lists the partition tables of drives?
+#Once again you need to be superuser for this (su -)
+
+fdisk -l
+
+#You can do sudo fdisk -l if you aren't superuser.

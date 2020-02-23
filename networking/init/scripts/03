@@ -1,0 +1,99 @@
+#!/bin/bash
+username=$1
+if [ "$username" == "" ] 
+then
+	echo "Hello and welcome to this evaluation program!"
+	sleep 1
+	echo "It seems you haven't set an username."
+	sleep 2
+	echo "Pro tip: You can add an username as a parameter to skip this step!"
+	sleep 3
+	echo "Please enter username: "
+	read username
+fi
+content=$(cat author)
+flag=0
+black='\033[0;30m'
+on_white='\033[47m'
+eoc='\033[0m'
+author_OK='Author OK'
+norminette_OK='Norminette OK'
+warning='may not compile'
+if test -f "author"; then
+	if [ -z "$(tail -c 1 author)" ] 
+	then
+		if [ -z "$(tail -c 2 author)" ]
+		then
+			echo "Author KO: Too many end of lines"
+			flag=2
+			cat -e author
+		else
+			if [ "$content" == "$username" ]
+			then
+				printf "$black$on_white$author_OK:$eoc "
+				cat -e author
+			else
+				echo "Something wrong with author file. Please check:"
+				cat -e author
+				flag=4
+			fi
+		fi
+	else
+		echo "Author KO: No new line at the end of the file!"
+		flag=1;
+	fi
+else
+	echo "Author file doesn't exist."
+	flag=3
+fi
+VAR=$(norminette | egrep "Error|$warning" -B 1)
+if [ "$VAR" == "" ]; 
+then
+	echo "$black$on_white$norminette_OK$eoc "
+else
+	echo "$VAR"
+fi
+if [ "$flag" == "1" ];
+then
+	while true; do
+		read -p "Do you want to add new line to your author file? [y/n] " yn
+		case $yn in
+			[Yy]* ) echo "" >> author; echo "Here is the cat -e output for author:"; cat -e author; exit;;
+			[Nn]* ) echo "Goodbye!"; exit;;
+			* ) echo "Please answer [y]es or [n]o.";;
+		esac
+	done
+fi
+if [ "$flag" == "2" ];
+then
+	while true; do
+		read -p "Do you want to get rid of extra lines on your author file? [y/n] " yn
+		case $yn in
+			[Yy]* ) grep . author > author; echo "$username" >> author; echo "Here is the cat -e output for author:"; cat -e author; exit;;
+			[Nn]* ) echo "Goodbye!"; exit;;
+			* ) echo "Please answer [y]es or [n]o.";;
+		esac
+	done
+fi
+if [ "$flag" == "3" ];
+then
+	while true; do
+		read -p "Do you want to create an author file? [y/n] " yn
+		case $yn in
+			[Yy]* ) touch author; echo "$username" >> author; echo "Here is the cat -e output for author:"; cat -e author; exit;;
+			[Nn]* ) echo "Goodbye!"; exit;;
+			* ) echo "Please answer [y]es or [n]o.";;
+		esac
+	done
+fi
+if [ "$flag" == "4" ];
+then
+	while true; do
+		read -p "There was something wrong with your author file (or username input was incorrect). Do you want to get it fixed? [y/n] " yn
+		case $yn in
+			[Yy]* ) grep . author > author; echo "$username" >> author; echo "Here is the cat -e output for author:"; cat -e author; exit;;
+			[Nn]* ) echo "Goodbye!"; exit;;
+			* ) echo "Please answer [y]es or [n]o.";;
+		esac
+	done
+fi

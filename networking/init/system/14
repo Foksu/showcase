@@ -1,0 +1,4 @@
+#Run the ‘tail -f /var/log/syslog‘ command in background
+#You need to be superuser for this so if you aren't root do "su -" and write the superuser password.
+
+tail -f /var/log/syslog &

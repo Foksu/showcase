@@ -1,0 +1,5 @@
+#Explain how connect yourself as new user. (With graphic session and ssh session)
+
+Graphic session: If there is user session online, reboot and select the new user (and type password). Else, boot system and select the new user (and type password).
+
+SSH session: <new_users_name>@<ip_address>, and type password.

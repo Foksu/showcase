@@ -1,0 +1,7 @@
+#Find the IP that was assigned to you by dhcp server
+#With networksetup -listallhardareports we know that en0 is the ethernet device
+#So with the command
+
+ipconfig getifaddr en0
+
+#We get the assigned IP of the device

@@ -1,0 +1,4 @@
+#Name the command that determines the state of the SSH service.
+#You need to be superuser with this so do "su -" first and put the password if you are not superuser.
+
+sudo service ssh status

@@ -1,0 +1,6 @@
+#Find the provider of slash16.org
+
+First we do nslookup slash16.org, and we pick IP from Non-authoritative adress, which at the time I was doing
+this task was 13.33.242.215
+
+whois 13.33.242.215 tells us that the provider is Amazon.

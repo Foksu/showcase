@@ -1,0 +1,3 @@
+#Identifiy the default gateway in the routing table
+
+route -n get default | grep 'gateway' | awk '{print $2}'
