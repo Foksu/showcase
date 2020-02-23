@@ -1,5 +1,7 @@
 ## Hive Helsinki Sudoku Group Project
 
+This was a rush group project, which means the project had to be done in one weekend.
+
 To run the Sudoku program:
 1. Compile the file with `gcc -o sudoku *.c`
 2. Run `./sudoku line1 line2 line3 line4 line5 line6 line7 line8 line9 | cat -e`. 
