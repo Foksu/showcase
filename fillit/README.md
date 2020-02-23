@@ -26,3 +26,5 @@ EEFFGG.
 .FFGGHH
 ....HH.
 ```
+
+My fillit tester can be found here: https://github.com/foksu/fillit_test
