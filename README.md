@@ -6,7 +6,7 @@ so no for-loops or do-while, none of that.
 
 The order in difficulty with this projects is roughly like this (from easiest to hardest):
 
-1. Piscine Reloaded
+1. [Piscine Reloaded](https://github.com/Foksu/showcase/blob/master/piscine_reloaded/piscine_reloaded.en.pdf)
 2. Sudoku solver
 3. Libft
 4. Networking
