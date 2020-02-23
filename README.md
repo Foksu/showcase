@@ -8,10 +8,10 @@ The order in difficulty with this projects is roughly like this (from easiest to
 
 1. [Piscine Reloaded](https://github.com/Foksu/showcase/blob/master/piscine_reloaded/piscine_reloaded.en.pdf)
 2. Sudoku solver
-3. Libft
-4. Networking
-5. Get_next_line
+3. [Libft](https://github.com/Foksu/showcase/blob/master/libft/libft.en.pdf)
+4. [Networking](https://github.com/Foksu/showcase/tree/master/networking)
+5. [Get_next_line](https://github.com/Foksu/showcase/blob/master/get_next_line/get_next_line.en.pdf)
 6. BSQ
-7. Fillit
-8. ft_printf
-9. push_swap
+7. [Fillit](https://github.com/Foksu/showcase/blob/master/fillit/fillit.en.pdf)
+8. [ft_printf](https://github.com/Foksu/showcase/blob/master/ft_printf/ft_printf.en.pdf)
+9. [push_swap](https://github.com/Foksu/showcase/blob/master/push_swap/push_swap.en.pdf)
