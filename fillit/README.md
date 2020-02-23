@@ -16,15 +16,15 @@ an issue if you run into any.
 
 Example:
 ```
-~ ./fillit samples/test_8
+~ ./fillit_test/valid9
 
-.AABB..
-AACCB..
-.CC.BDD
-.EE.DD.
-EEFFGG.
-.FFGGHH
-....HH.
+ABBBBDD
+ACCCDDE
+AF.C..E
+AFGGG.E
+.FFGHHE
+II..HH.
+II.....
 ```
 
 My fillit tester can be found here: https://github.com/foksu/fillit_test
