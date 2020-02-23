@@ -4,7 +4,7 @@ Some of the files can show up as funny because of the Hive Helsinki requirements
 write code in certain standard, for example functions must be maximum of 25 lines long and loops could be written only with while(), 
 so no for-loops or do-while, none of that.
 
-The order in difficulty with this projects is roughly like this (from easiest to hardest):
+The order in difficulty with this projects is roughly like this (top: easiest | bottom: hardest):
 
 | Project        	| PDF                                                                                        	| Solutions                                                                               	|
 |----------------	|--------------------------------------------------------------------------------------------	|-----------------------------------------------------------------------------------------	|
