@@ -17,3 +17,7 @@ The order in difficulty with this projects is roughly like this (top: easiest | 
 | Fillit | [PDF](https://github.com/Foksu/showcase/blob/master/fillit/fillit.en.pdf) | [Repository](https://github.com/Foksu/showcase/blob/master/fillit/) |
 | ft_printf | [PDF](https://github.com/Foksu/showcase/blob/master/ft_printf/ft_printf.en.pdf) | [Repository](https://github.com/Foksu/showcase/blob/master/ft_printf/) |
 | push_swap | [PDF](https://github.com/Foksu/showcase/blob/master/push_swap/push_swap.en.pdf) | [Repository](https://github.com/Foksu/showcase/blob/master/push_swap/) |
+
+| Extras | Description |
+|--------| ---------------------------------------------------|
+| [Bitwise trickery](https://github.com/Foksu/bitwise_trickery) | Different programs what bitwise operations can do |
