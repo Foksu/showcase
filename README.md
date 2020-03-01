@@ -21,3 +21,4 @@ The order in difficulty with this projects is roughly like this (top: easiest | 
 | Extras | Description |
 |--------| ---------------------------------------------------|
 | [Bitwise trickery](https://github.com/Foksu/bitwise_trickery) | Different programs what bitwise operations can do |
+| [Unity](https://github.com/Foksu/unity) | Some stuff from my Unity projects |
